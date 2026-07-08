@@ -6,3 +6,6 @@ pubspec.lock
 assets/kokoro/
 test_assets/kokoro/*
 !test_assets/kokoro/.gitkeep
+
+__pycache__/
+*.py[cod]
