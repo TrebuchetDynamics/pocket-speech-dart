@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -73,8 +74,10 @@ class Kokoro {
   /// Loads the voices from the voices.json file
   Future<void> _loadVoices() async {
     try {
-      // Load voices from the JSON asset (converted from voices-v1.0.bin)
-      final String jsonString = await rootBundle.loadString(config.voicesPath);
+      // Load voices from an app asset or a downloaded filesystem path.
+      final String jsonString = config.voicesPath.startsWith('assets/')
+          ? await rootBundle.loadString(config.voicesPath)
+          : await File(config.voicesPath).readAsString();
       final Map<String, dynamic> voicesData = jsonDecode(jsonString);
 
       // Create a map of voice objects
