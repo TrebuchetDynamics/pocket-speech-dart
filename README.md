@@ -1,12 +1,12 @@
-# kokorodart
+# Pocket Speech
 
-A Flutter/Dart package for offline Kokoro TTS with an optional large local model pack. Its owned `kokoro_engine` code runs inference on-device through ONNX Runtime and returns PCM/WAV bytes for app playback.
+Offline speech synthesis for Flutter and Dart. Pocket Speech runs Kokoro and KittenTTS model packs on-device through ONNX Runtime and returns PCM/WAV bytes for app playback.
 
 > **Large asset warning:** Kokoro runs locally/offline, but the assets are not tiny: the ONNX model is about 326 MB and the full voices file is about 28 MB. For mobile apps, treat Kokoro as an optional voice pack unless offline-on-first-launch is worth the install-size cost.
 
 ## Public status
 
-Target repo: `TrebuchetDynamics/kokorodart`.
+Target repo: `TrebuchetDynamics/pocket-speech-dart`.
 
 Experimental package status:
 
@@ -21,15 +21,16 @@ Experimental package status:
 ## Why this shape
 
 - Kokoro needs a large ONNX model plus voice embeddings (`kokoro-v1.0.onnx`, `voices-v1.0.bin` or converted `voices.json`).
-- Direct ONNX/runtime wiring lives in the local `kokoro_engine`; this package keeps Navivox behind one small owned API instead of coupling app code to another wrapper package.
+- KittenTTS provides smaller English-only 15M, 40M, and 80M ONNX alternatives.
+- Direct ONNX/runtime wiring lives in the local engine so app code is not coupled to provider-specific wrapper packages.
 - No cloud TTS API is called by this wrapper. Bundle, asset-pack, or download model assets depending on your offline and app-size tradeoff.
 
-## Install from Navivox
+## Install
 
 ```yaml
 dependencies:
-  kokorodart:
-    path: ../kokorodart
+  pocket_speech:
+    path: ../pocket-speech-dart
 ```
 
 ## Download assets
@@ -58,13 +59,27 @@ Size/checksum notes:
 
 Do not commit these large files unless your app intentionally vendors Kokoro assets.
 
-Then add runtime assets to your Flutter app:
+### KittenTTS model packs
+
+Download one or several KittenTTS 0.8 variants:
+
+```bash
+python3 -m pip install numpy
+python3 tool/download_kitten_assets.py --out assets/kitten \
+  --models nano-fp32,micro,mini
+```
+
+Available model IDs are `mini` (~78 MB), `micro` (~41 MB), `nano-fp32` (~57 MB), and `nano-int8` (~24 MB). Each selected folder contains `model.onnx`, the original `voices.npz`, and a Flutter-readable `voices.json`. Upstream currently warns that `nano-int8` may have issues, so `nano-fp32` is the default.
+
+Then add only the runtime assets you selected to your Flutter app:
 
 ```yaml
 flutter:
   assets:
     - assets/kokoro/kokoro-v1.0.onnx
     - assets/kokoro/voices.json
+    - assets/kitten/nano-fp32/model.onnx
+    - assets/kitten/nano-fp32/voices.json
 ```
 
 ## Play Store asset strategy
@@ -82,10 +97,10 @@ Tradeoff: if assets are downloaded after install, the app is not fully offline u
 ## Use
 
 ```dart
-import 'package:kokorodart/kokorodart.dart';
+import 'package:pocket_speech/pocket_speech.dart';
 
-final tts = KokoroDart(
-  const KokoroDartConfig(
+final tts = PocketSpeech.kokoro(
+  const KokoroTtsConfig(
     modelAsset: 'assets/kokoro/kokoro-v1.0.onnx',
     voicesAsset: 'assets/kokoro/voices.json',
   ),
@@ -98,14 +113,33 @@ final wavBytes = await tts.synthesizeWav(
 );
 ```
 
+KittenTTS uses the same audio result type and eight English voices:
+
+```dart
+final kitten = PocketSpeech.kitten(
+  const KittenTtsConfig(
+    modelAsset: 'assets/kitten/nano-fp32/model.onnx',
+    voicesAsset: 'assets/kitten/nano-fp32/voices.json',
+    model: KittenTtsModel.nanoFp32,
+  ),
+);
+
+final wavBytes = await kitten.synthesizeWav(
+  'Kitten TTS is running locally.',
+  voice: 'Jasper',
+);
+```
+
+Use `KittenCatalog.models` and `KittenCatalog.voices` to populate app download and voice selectors.
+
 ## List voices, languages, and settings
 
 ```dart
-final languages = KokoroDartCatalog.languages;
-final spanishVoices = KokoroDartCatalog.voicesForLanguage('es');
-final speed = KokoroDartCatalog.speed; // min 0.5, default 1.0, max 2.0
+final languages = KokoroCatalog.languages;
+final spanishVoices = KokoroCatalog.voicesForLanguage('es');
+final speed = KokoroCatalog.speed; // min 0.5, default 1.0, max 2.0
 
-final options = KokoroDartSynthesisOptions.forLanguage('es').copyWith(
+final options = KokoroSynthesisOptions.forLanguage('es').copyWith(
   voice: 'ef_dora',
   speed: 1.15,
 );
@@ -129,8 +163,8 @@ python3 -m pip install numpy openai-whisper
 # Downloads ONNX + voices-v1.0.bin; exports af_heart and ef_dora into voices.json.
 python3 tool/setup_e2e_assets.py
 flutter test integration_test/recursive_tts_stt_e2e_test.dart -d linux \
-  --dart-define=KOKORODART_E2E=true \
-  --dart-define=KOKORODART_STT_COMMAND='["python3","-m","whisper","{wav}","--language","{lang}","--model","tiny","--device","cpu","--fp16","False","--output_format","txt","--output_dir","{dir}"]'
+  --dart-define=POCKET_SPEECH_E2E=true \
+  --dart-define=POCKET_SPEECH_STT_COMMAND='["python3","-m","whisper","{wav}","--language","{lang}","--model","tiny","--device","cpu","--fp16","False","--output_format","txt","--output_dir","{dir}"]'
 ```
 
 What it runs for both English and Spanish:
@@ -139,13 +173,13 @@ What it runs for both English and Spanish:
 seed text → Kokoro TTS WAV → local STT transcript → Kokoro TTS WAV → local STT transcript
 ```
 
-`KOKORODART_STT_COMMAND` is a JSON string array. Placeholders:
+`POCKET_SPEECH_STT_COMMAND` is a JSON string array. Placeholders:
 
 - `{wav}`: generated WAV path
 - `{lang}`: `en` or `es`
 - `{dir}`: temp output directory for tools like Whisper that write `.txt`
 
-Optional overrides: `KOKORODART_MODEL_ASSET`, `KOKORODART_VOICES_ASSET`, `KOKORODART_EN_VOICE`, `KOKORODART_ES_VOICE`.
+Optional overrides: `POCKET_SPEECH_MODEL_ASSET`, `POCKET_SPEECH_VOICES_ASSET`, `POCKET_SPEECH_EN_VOICE`, `POCKET_SPEECH_ES_VOICE`.
 
 ## Notes
 

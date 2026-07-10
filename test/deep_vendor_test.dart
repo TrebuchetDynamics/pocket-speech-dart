@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kokorodart/src/kokoro_engine/src/tokenizer.dart';
+import 'package:pocket_speech/src/kokoro_engine/src/tokenizer.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

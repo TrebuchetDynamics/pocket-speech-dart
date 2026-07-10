@@ -2,26 +2,26 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:kokorodart/kokorodart.dart';
+import 'package:pocket_speech/pocket_speech.dart';
 
 import '../test/support/recursive_tts_stt.dart';
 
-const _e2eEnabled = bool.fromEnvironment('KOKORODART_E2E');
+const _e2eEnabled = bool.fromEnvironment('POCKET_SPEECH_E2E');
 const _modelAsset = String.fromEnvironment(
-  'KOKORODART_MODEL_ASSET',
+  'POCKET_SPEECH_MODEL_ASSET',
   defaultValue: 'test_assets/kokoro/kokoro-v1.0.onnx',
 );
 const _voicesAsset = String.fromEnvironment(
-  'KOKORODART_VOICES_ASSET',
+  'POCKET_SPEECH_VOICES_ASSET',
   defaultValue: 'test_assets/kokoro/voices.json',
 );
-const _sttCommand = String.fromEnvironment('KOKORODART_STT_COMMAND');
+const _sttCommand = String.fromEnvironment('POCKET_SPEECH_STT_COMMAND');
 const _enVoice = String.fromEnvironment(
-  'KOKORODART_EN_VOICE',
+  'POCKET_SPEECH_EN_VOICE',
   defaultValue: 'af_heart',
 );
 const _esVoice = String.fromEnvironment(
-  'KOKORODART_ES_VOICE',
+  'POCKET_SPEECH_ES_VOICE',
   defaultValue: 'ef_dora',
 );
 
@@ -29,25 +29,25 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   final enabled =
-      _e2eEnabled || Platform.environment['KOKORODART_E2E'] == 'true';
+      _e2eEnabled || Platform.environment['POCKET_SPEECH_E2E'] == 'true';
   final commandText =
-      Platform.environment['KOKORODART_STT_COMMAND'] ?? _sttCommand;
+      Platform.environment['POCKET_SPEECH_STT_COMMAND'] ?? _sttCommand;
   final skipReason = enabled
       ? null
-      : 'Set KOKORODART_E2E=true to run real local TTS/STT e2e.';
+      : 'Set POCKET_SPEECH_E2E=true to run real local TTS/STT e2e.';
 
   test(
     'English and Spanish survive TTS STT TTS STT',
     () async {
       if (commandText.isEmpty) {
         fail(
-          'Set KOKORODART_STT_COMMAND to a JSON string array, e.g. '
+          'Set POCKET_SPEECH_STT_COMMAND to a JSON string array, e.g. '
           '["python3","-m","whisper","{wav}","--language","{lang}","--model","tiny","--output_format","txt","--output_dir","{dir}"]',
         );
       }
 
-      final tts = KokoroDart(
-        const KokoroDartConfig(
+      final tts = PocketSpeech.kokoro(
+        const KokoroTtsConfig(
           modelAsset: _modelAsset,
           voicesAsset: _voicesAsset,
         ),

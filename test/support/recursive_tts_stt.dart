@@ -178,7 +178,7 @@ class LocalSttCommand {
     RecursiveSpeechCase speechCase,
     int pass,
   ) async {
-    final temp = await Directory.systemTemp.createTemp('kokorodart-stt-');
+    final temp = await Directory.systemTemp.createTemp('pocket-speech-stt-');
     try {
       final wavFile = File('${temp.path}/${speechCase.name}-$pass.wav');
       final outDir = Directory('${temp.path}/out')..createSync();

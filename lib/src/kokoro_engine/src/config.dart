@@ -20,8 +20,11 @@ class KokoroConfig {
   /// Path to the voices file
   final String voicesPath;
 
-  /// Whether the model is an int8 quantized model
+  /// Whether the model returns int8 audio samples.
   final bool isInt8;
+
+  /// Whether to use KittenTTS token and padding conventions.
+  final bool isKitten;
 
   /// Tokenizer configuration
   final TokenizerConfig? tokenizerConfig;
@@ -30,6 +33,7 @@ class KokoroConfig {
     required this.modelPath,
     required this.voicesPath,
     this.isInt8 = false,
+    this.isKitten = false,
     this.tokenizerConfig,
   });
 
@@ -54,12 +58,14 @@ class KokoroConfig {
     String? modelPath,
     String? voicesPath,
     bool? isInt8,
+    bool? isKitten,
     TokenizerConfig? tokenizerConfig,
   }) {
     return KokoroConfig(
       modelPath: modelPath ?? this.modelPath,
       voicesPath: voicesPath ?? this.voicesPath,
       isInt8: isInt8 ?? this.isInt8,
+      isKitten: isKitten ?? this.isKitten,
       tokenizerConfig: tokenizerConfig ?? this.tokenizerConfig,
     );
   }

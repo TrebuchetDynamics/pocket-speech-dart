@@ -13,7 +13,7 @@ OUT = ROOT / "test_assets" / "kokoro"
 
 
 def main() -> None:
-    voices = [voice.strip() for voice in os.environ.get("KOKORODART_E2E_VOICES", "af_heart,ef_dora").split(",") if voice.strip()]
+    voices = [voice.strip() for voice in os.environ.get("POCKET_SPEECH_E2E_VOICES", "af_heart,ef_dora").split(",") if voice.strip()]
     paths = download_assets(OUT, voices)
     print("ready")
     for path in paths:

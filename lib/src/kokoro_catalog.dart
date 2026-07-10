@@ -1,5 +1,5 @@
-class KokoroDartSpeed {
-  const KokoroDartSpeed({
+class PocketSpeechSpeed {
+  const PocketSpeechSpeed({
     this.min = 0.5,
     this.max = 2.0,
     this.defaultValue = 1.0,
@@ -16,8 +16,8 @@ class KokoroDartSpeed {
   }
 }
 
-class KokoroDartLanguage {
-  const KokoroDartLanguage({
+class KokoroLanguage {
+  const KokoroLanguage({
     required this.code,
     required this.kokoroCode,
     required this.name,
@@ -30,8 +30,8 @@ class KokoroDartLanguage {
   final String defaultVoice;
 }
 
-class KokoroDartVoice {
-  const KokoroDartVoice({
+class KokoroVoice {
+  const KokoroVoice({
     required this.id,
     required this.name,
     required this.languageCode,
@@ -44,17 +44,17 @@ class KokoroDartVoice {
   final String gender;
 }
 
-class KokoroDartSynthesisOptions {
-  const KokoroDartSynthesisOptions({
+class KokoroSynthesisOptions {
+  const KokoroSynthesisOptions({
     this.voice = 'af_heart',
     this.language = 'en-us',
     this.speed = 1.0,
     this.trim = true,
   });
 
-  factory KokoroDartSynthesisOptions.forLanguage(String language) {
-    final lang = KokoroDartCatalog.language(language);
-    return KokoroDartSynthesisOptions(
+  factory KokoroSynthesisOptions.forLanguage(String language) {
+    final lang = KokoroCatalog.language(language);
+    return KokoroSynthesisOptions(
       language: lang.code,
       voice: lang.defaultVoice,
     );
@@ -65,12 +65,12 @@ class KokoroDartSynthesisOptions {
   final double speed;
   final bool trim;
 
-  KokoroDartSynthesisOptions copyWith({
+  KokoroSynthesisOptions copyWith({
     String? voice,
     String? language,
     double? speed,
     bool? trim,
-  }) => KokoroDartSynthesisOptions(
+  }) => KokoroSynthesisOptions(
     voice: voice ?? this.voice,
     language: language ?? this.language,
     speed: speed ?? this.speed,
@@ -78,61 +78,61 @@ class KokoroDartSynthesisOptions {
   );
 }
 
-class KokoroDartCatalog {
-  KokoroDartCatalog._();
+class KokoroCatalog {
+  KokoroCatalog._();
 
-  static const speed = KokoroDartSpeed();
+  static const speed = PocketSpeechSpeed();
 
   static const languages = [
-    KokoroDartLanguage(
+    KokoroLanguage(
       code: 'en-us',
       kokoroCode: 'a',
       name: 'American English',
       defaultVoice: 'af_heart',
     ),
-    KokoroDartLanguage(
+    KokoroLanguage(
       code: 'en-gb',
       kokoroCode: 'b',
       name: 'British English',
       defaultVoice: 'bf_alice',
     ),
-    KokoroDartLanguage(
+    KokoroLanguage(
       code: 'es',
       kokoroCode: 'e',
       name: 'Spanish',
       defaultVoice: 'ef_dora',
     ),
-    KokoroDartLanguage(
+    KokoroLanguage(
       code: 'fr-fr',
       kokoroCode: 'f',
       name: 'French',
       defaultVoice: 'ff_siwis',
     ),
-    KokoroDartLanguage(
+    KokoroLanguage(
       code: 'hi',
       kokoroCode: 'h',
       name: 'Hindi',
       defaultVoice: 'hf_alpha',
     ),
-    KokoroDartLanguage(
+    KokoroLanguage(
       code: 'it',
       kokoroCode: 'i',
       name: 'Italian',
       defaultVoice: 'if_sara',
     ),
-    KokoroDartLanguage(
+    KokoroLanguage(
       code: 'ja',
       kokoroCode: 'j',
       name: 'Japanese',
       defaultVoice: 'jf_alpha',
     ),
-    KokoroDartLanguage(
+    KokoroLanguage(
       code: 'pt-br',
       kokoroCode: 'p',
       name: 'Brazilian Portuguese',
       defaultVoice: 'pf_dora',
     ),
-    KokoroDartLanguage(
+    KokoroLanguage(
       code: 'zh',
       kokoroCode: 'z',
       name: 'Mandarin Chinese',
@@ -140,7 +140,7 @@ class KokoroDartCatalog {
     ),
   ];
 
-  static List<KokoroDartVoice> get voices =>
+  static List<KokoroVoice> get voices =>
       _voiceIds.map(_voice).toList(growable: false);
 
   static bool supportsLanguage(String code) =>
@@ -148,30 +148,30 @@ class KokoroDartCatalog {
 
   static bool supportsVoice(String id) => _voiceIds.contains(id);
 
-  static KokoroDartLanguage language(String code) => languages.firstWhere(
+  static KokoroLanguage language(String code) => languages.firstWhere(
     (language) => language.code == code,
     orElse: () =>
         throw ArgumentError.value(code, 'code', 'unsupported language'),
   );
 
-  static List<KokoroDartVoice> voicesForLanguage(String code) {
+  static List<KokoroVoice> voicesForLanguage(String code) {
     language(code);
     return voices
         .where((voice) => voice.languageCode == code)
         .toList(growable: false);
   }
 
-  static KokoroDartVoice defaultVoiceForLanguage(String code) =>
+  static KokoroVoice defaultVoiceForLanguage(String code) =>
       voice(language(code).defaultVoice);
 
-  static KokoroDartVoice voice(String id) {
+  static KokoroVoice voice(String id) {
     if (!_voiceIds.contains(id)) {
       throw ArgumentError.value(id, 'id', 'unsupported voice');
     }
     return _voice(id);
   }
 
-  static KokoroDartVoice _voice(String id) {
+  static KokoroVoice _voice(String id) {
     final parts = id.split('_');
     final prefix = parts.first;
     final languageCode = _languageByVoicePrefix[prefix] ?? 'en-us';
@@ -184,7 +184,7 @@ class KokoroDartCatalog {
               : '${part[0].toUpperCase()}${part.substring(1)}',
         )
         .join(' ');
-    return KokoroDartVoice(
+    return KokoroVoice(
       id: id,
       name: name,
       languageCode: languageCode,

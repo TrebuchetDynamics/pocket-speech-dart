@@ -2,13 +2,11 @@ import 'dart:typed_data';
 
 import 'kokoro_engine/kokoro_engine.dart' as kokoro;
 
-import 'catalog.dart';
-import 'wav.dart';
+import 'audio.dart';
+import 'kokoro_catalog.dart';
 
-const kokoroSampleRate = 24000;
-
-class KokoroDartConfig {
-  const KokoroDartConfig({
+class KokoroTtsConfig {
+  const KokoroTtsConfig({
     required this.modelAsset,
     required this.voicesAsset,
     this.isInt8 = false,
@@ -25,22 +23,22 @@ class KokoroDartConfig {
   );
 }
 
-class KokoroDart {
-  KokoroDart(KokoroDartConfig config)
+class KokoroTts {
+  KokoroTts(KokoroTtsConfig config)
     : _engine = kokoro.Kokoro(config.toUpstream());
 
   final kokoro.Kokoro _engine;
   var _ready = false;
 
-  Future<KokoroDartAudio> synthesize(
+  Future<PocketSpeechAudio> synthesize(
     String text, {
     String voice = 'af_heart',
     String language = 'en-us',
     double speed = 1.0,
     bool trim = true,
   }) async {
-    KokoroDartCatalog.speed.check(speed);
-    if (text.trim().isEmpty) return KokoroDartAudio.empty();
+    KokoroCatalog.speed.check(speed);
+    if (text.trim().isEmpty) return PocketSpeechAudio.empty();
     if (!_ready) {
       await _engine.initialize();
       _ready = true;
@@ -53,16 +51,16 @@ class KokoroDart {
       speed: speed,
       trim: trim,
     );
-    return KokoroDartAudio(
+    return PocketSpeechAudio(
       samples: List<num>.unmodifiable(result.audio),
       sampleRate: result.sampleRate,
       phonemes: result.phonemes,
     );
   }
 
-  Future<KokoroDartAudio> synthesizeWithOptions(
+  Future<PocketSpeechAudio> synthesizeWithOptions(
     String text,
-    KokoroDartSynthesisOptions options,
+    KokoroSynthesisOptions options,
   ) => synthesize(
     text,
     voice: options.voice,
@@ -87,33 +85,6 @@ class KokoroDart {
 
   Future<Uint8List> synthesizeWavWithOptions(
     String text,
-    KokoroDartSynthesisOptions options,
+    KokoroSynthesisOptions options,
   ) async => (await synthesizeWithOptions(text, options)).toWav();
-}
-
-class KokoroDartAudio {
-  const KokoroDartAudio({
-    required this.samples,
-    required this.sampleRate,
-    required this.phonemes,
-  });
-
-  KokoroDartAudio.empty()
-    : samples = const <num>[],
-      sampleRate = kokoroSampleRate,
-      phonemes = '';
-
-  final List<num> samples;
-  final int sampleRate;
-  final String phonemes;
-
-  Duration get duration => Duration(
-    microseconds: sampleRate == 0
-        ? 0
-        : (samples.length * 1000000 ~/ sampleRate),
-  );
-
-  Int16List toPcm16() => floatToPcm16(samples);
-
-  Uint8List toWav() => pcm16Wav(toPcm16(), sampleRate: sampleRate);
 }

@@ -263,7 +263,10 @@ class Kokoro {
       'Dart createTTS: Voice (raw): $voice, Language: $lang, Speed: $speed, IsPhonemes: $isPhonemes',
     );
 
-    assert(speed >= 0.5 && speed <= 2.0, 'Speed should be between 0.5 and 2.0');
+    assert(
+      config.isKitten || (speed >= 0.5 && speed <= 2.0),
+      'Speed should be between 0.5 and 2.0',
+    );
 
     // Resolve voice
     late Voice voiceObj;
@@ -296,13 +299,16 @@ class Kokoro {
     for (final batch in batches) {
       _trace('Dart createTTS Batch: Processing phoneme batch: "$batch"');
       // Convert phonemes to token IDs
-      final List<int> tokens = _tokenizer.tokenize(batch);
+      final List<int> tokens = _tokenizer.tokenize(
+        batch,
+        kitten: config.isKitten,
+      );
       _trace('Dart: Unpadded Tokens for batch: $tokens');
 
       // Get the appropriate style vector for this token length
       // This is the key alignment with kokoro-onnx: selecting style vector based on token count
       final Float32List styleVector = voiceObj.getStyleVectorForTokens(
-        tokens.length,
+        config.isKitten ? text.length : tokens.length,
       );
       String styleVecStr;
       if (styleVector.length <= 20) {
@@ -322,6 +328,7 @@ class Kokoro {
         voice: styleVector,
         speed: speed,
         isInt8: config.isInt8,
+        isKitten: config.isKitten,
       );
 
       _trace('Dart Batch: Raw audio from model (length: ${audio.length})');
@@ -387,7 +394,10 @@ class Kokoro {
   }) async* {
     await ensureInitialized();
 
-    assert(speed >= 0.5 && speed <= 2.0, 'Speed should be between 0.5 and 2.0');
+    assert(
+      config.isKitten || (speed >= 0.5 && speed <= 2.0),
+      'Speed should be between 0.5 and 2.0',
+    );
 
     // Resolve voice
     late Voice voiceObj;
@@ -415,14 +425,17 @@ class Kokoro {
 
     // Stream each batch
     for (final batch in batches) {
-      final tokens = _tokenizer.tokenize(batch);
+      final tokens = _tokenizer.tokenize(batch, kitten: config.isKitten);
 
       // Run inference
       final audio = await _modelRunner.runInference(
         tokens: tokens,
-        voice: voiceObj.getStyleVectorForTokens(tokens.length),
+        voice: voiceObj.getStyleVectorForTokens(
+          config.isKitten ? text.length : tokens.length,
+        ),
         speed: speed,
         isInt8: config.isInt8,
+        isKitten: config.isKitten,
       );
 
       // Apply trimming if requested

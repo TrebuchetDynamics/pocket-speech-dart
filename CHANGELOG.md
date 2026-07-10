@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Renamed the package to Pocket Speech and added the provider-neutral `PocketSpeech` API.
+- Added KittenTTS 0.8 mini, micro, nano-fp32, and nano-int8 model-pack downloads and local inference.
+
 ## 0.1.0
 
 - Initial experimental Kokoro Flutter/Dart package.

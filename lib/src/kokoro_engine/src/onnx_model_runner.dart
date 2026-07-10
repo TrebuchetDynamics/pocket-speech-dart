@@ -71,15 +71,14 @@ class OnnxModelRunner {
     required Float32List voice,
     required double speed,
     bool isInt8 = false,
+    bool isKitten = false,
   }) async {
     if (_session == null || !_isInitialized) {
       throw Exception('Model not initialized. Call initialize() first.');
     }
 
     try {
-      // Padding tokens with start/end tokens (0) as in kokoro-onnx
-      // This is crucial for matching the Python implementation
-      final paddedTokens = [0, ...tokens, 0];
+      final paddedTokens = isKitten ? [0, ...tokens, 10, 0] : [0, ...tokens, 0];
       _trace('Padded tokens: $paddedTokens (length: ${paddedTokens.length})');
 
       // Get input names from session
@@ -178,7 +177,9 @@ class OnnxModelRunner {
         _trace(
           'Dart: Raw ONNX Output (float32) (first 10): ${outputData.sublist(0, outputData.length > 10 ? 10 : outputData.length)}',
         );
-        return outputData;
+        return isKitten && outputData.length > 5000
+            ? outputData.sublist(0, outputData.length - 5000)
+            : outputData;
       }
     } catch (e) {
       throw Exception('Failed to run inference: $e');

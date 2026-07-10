@@ -1,8 +1,8 @@
-name: kokorodart
-description: Flutter/Dart wrapper for offline Kokoro TTS with optional local ONNX assets.
+name: pocket_speech
+description: Offline speech synthesis for Flutter and Dart with local Kokoro and KittenTTS models.
 version: 0.1.0
-repository: https://github.com/TrebuchetDynamics/kokorodart
-issue_tracker: https://github.com/TrebuchetDynamics/kokorodart/issues
+repository: https://github.com/TrebuchetDynamics/pocket-speech-dart
+issue_tracker: https://github.com/TrebuchetDynamics/pocket-speech-dart/issues
 topics:
   - kokoro
   - tts

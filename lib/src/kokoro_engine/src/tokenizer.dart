@@ -430,30 +430,58 @@ class Tokenizer {
   ///
   /// Note: This method does NOT add padding tokens (0 at start and end).
   /// The padding is handled by the OnnxModelRunner to match the Python implementation.
-  List<int> tokenize(String phonemes) {
+  List<int> tokenize(String phonemes, {bool kitten = false}) {
     if (phonemes.length > maxPhonemeLength) {
       throw Exception(
         'Text is too long, must be less than $maxPhonemeLength phonemes',
       );
     }
 
-    List<int> tokens = [];
-    for (int i = 0; i < phonemes.length; i++) {
-      String charPhoneme = phonemes[i];
-      if (_vocab.containsKey(charPhoneme)) {
-        tokens.add(_vocab[charPhoneme]!);
-      } else {
-        // Optional: Log unknown phoneme characters, or decide on a specific UNK token
-        // For now, we'll skip unknown characters to match Python's `if i is not None`
-        // print('Warning: Unknown phoneme character "$charPhoneme"');
-      }
+    final source = kitten ? _prepareKittenPhonemes(phonemes) : phonemes;
+    final vocab = kitten ? _kittenVocab : _vocab;
+    final tokens = <int>[];
+    for (final charPhoneme in source.split('')) {
+      final token = vocab[charPhoneme];
+      if (token != null) tokens.add(token);
     }
     _trace(
-      'Tokenized phonemes: "$phonemes" -> ${tokens.length} tokens',
+      'Tokenized phonemes: "$source" -> ${tokens.length} tokens',
       name: 'kokoro_tokenizer',
     );
     return tokens;
   }
+
+  static String _prepareKittenPhonemes(String phonemes) {
+    final parts = <String>[];
+    var word = '';
+    void flushWord() {
+      if (word.isNotEmpty) parts.add(word);
+      word = '';
+    }
+
+    for (final char in phonemes.split('')) {
+      if (_kittenWordCharacters.contains(char) ||
+          RegExp(r'[A-Za-z0-9_]').hasMatch(char)) {
+        word += char;
+      } else {
+        flushWord();
+        if (char.trim().isNotEmpty) parts.add(char);
+      }
+    }
+    flushWord();
+    return parts.join(' ');
+  }
+
+  // Matches KittenTTS 0.8's TextCleaner table, including duplicate symbols.
+  static final Map<String, int> _kittenVocab = {
+    for (final (index, char) in _kittenSymbols.split('').indexed) char: index,
+  };
+  static const _kittenSymbols =
+      r'$;:,.!?¡¿—…"«»"" '
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+      'ɑɐɒæɓʙβɔɕçɗɖðʤəɘɚɛɜɝɞɟʄɡɠɢʛɦɧħɥʜɨɪʝɭɬɫɮʟɱɯɰŋɳɲɴøɵɸθœɶʘɹɺɾɻʀʁɽʂʃʈʧʉʊʋⱱʌɣɤʍχʎʏʑʐʒʔʡʕʢǀǁǂǃˈˌːˑʼʴʰʱʲʷˠˤ˞↓↑→↗↘\'̩\'ᵻ';
+  static const _kittenWordCharacters =
+      'ɑɐɒæɓʙβɔɕçɗɖðʤəɘɚɛɜɝɞɟʄɡɠɢʛɦɧħɥʜɨɪʝɭɬɫɮʟɱɯɰŋɳɲɴøɵɸθœɶʘɹɺɾɻʀʁɽʂʃʈʧʉʊʋⱱʌɣɤʍχʎʏʑʐʒʔʡʕʢǀǁǂǃˈˌːˑʼʴʰʱʲʷˠˤᵻ';
 
   // Map of letters to their phonemic representations for spell-out fallback
   static const Map<String, String> _letterPhonemes = {

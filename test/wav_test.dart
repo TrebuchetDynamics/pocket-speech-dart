@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kokorodart/kokorodart.dart';
+import 'package:pocket_speech/pocket_speech.dart';
 
 void main() {
   test('writes a mono 16-bit wav header', () {
@@ -19,16 +19,16 @@ void main() {
   });
 
   test('empty audio has Kokoro defaults', () {
-    final audio = KokoroDartAudio.empty();
+    final audio = PocketSpeechAudio.empty();
 
-    expect(audio.sampleRate, kokoroSampleRate);
+    expect(audio.sampleRate, pocketSpeechSampleRate);
     expect(audio.duration, Duration.zero);
     expect(audio.toWav().length, 44);
   });
 
   test('rejects unsupported speed before model load', () async {
-    final tts = KokoroDart(
-      const KokoroDartConfig(
+    final tts = KokoroTts(
+      const KokoroTtsConfig(
         modelAsset: 'model.onnx',
         voicesAsset: 'voices.json',
       ),

@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:kokorodart/kokorodart.dart';
+import 'package:pocket_speech/pocket_speech.dart';
 
 Future<void> main() async {
-  final tts = KokoroDart(
-    const KokoroDartConfig(
+  final tts = PocketSpeech.kokoro(
+    const KokoroTtsConfig(
       modelAsset: 'assets/kokoro-v1.0.onnx',
       voicesAsset: 'assets/voices.json',
     ),
