@@ -94,7 +94,7 @@ class Tokenizer {
   Future<void> _loadVocabulary() async {
     try {
       final jsonString = await rootBundle.loadString(
-        'assets/tokenizer_vocab.json',
+        'packages/pocket_speech/assets/tokenizer_vocab.json',
       );
       final Map<String, dynamic> vocabMap = Map<String, dynamic>.from(
         jsonDecode(jsonString),
@@ -105,17 +105,16 @@ class Tokenizer {
         name: 'kokoro_tokenizer',
       );
     } catch (e) {
-      throw Exception(
-        'Failed to load vocabulary from assets/tokenizer_vocab.json: $e',
-      );
+      throw Exception('Failed to load Pocket Speech tokenizer vocabulary: $e');
     }
   }
 
   /// Loads the lexicon mapping from words to phonemes
   Future<void> _loadLexicon() async {
     try {
-      // Default to assets/lexicon.json if not specified in config
-      final lexiconPath = config?.lexiconPath ?? 'assets/lexicon.json';
+      // Dependency assets are namespaced in a consuming Flutter app.
+      final lexiconPath =
+          config?.lexiconPath ?? 'packages/pocket_speech/assets/lexicon.json';
       final jsonString = await rootBundle.loadString(lexiconPath);
       final Map<String, dynamic> lexiconMap = Map<String, dynamic>.from(
         jsonDecode(jsonString),

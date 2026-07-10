@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pocket_speech/pocket_speech.dart';
 
 void main() {
-  test('PocketSpeech creates explicit provider implementations', () {
+  test('PocketSpeech creates explicit provider implementations', () async {
     final kokoro = PocketSpeech.kokoro(
       const KokoroTtsConfig(
         modelAsset: 'kokoro.onnx',
@@ -19,5 +19,8 @@ void main() {
     expect(kokoro, isA<KokoroTts>());
     expect(kitten, isA<KittenTts>());
     expect(PocketSpeechAudio.empty().samples, isEmpty);
+
+    await kokoro.dispose();
+    await kitten.dispose();
   });
 }

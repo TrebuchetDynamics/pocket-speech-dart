@@ -87,4 +87,6 @@ class KokoroTts {
     String text,
     KokoroSynthesisOptions options,
   ) async => (await synthesizeWithOptions(text, options)).toWav();
+
+  Future<void> dispose() => _engine.dispose();
 }
