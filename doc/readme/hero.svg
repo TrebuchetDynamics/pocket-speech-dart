@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-labelledby="title desc">
+  <title id="title">Pocket Speech — offline speech synthesis for Flutter and Dart</title>
+  <desc id="desc">Pocket Speech routes local text through Kokoro or KittenTTS models in ONNX Runtime and returns 24 kilohertz PCM or WAV audio without a cloud API.</desc>
+
+  <rect width="1200" height="400" rx="24" fill="#081018"/>
+  <path d="M0 352H1200" stroke="#1B3442" stroke-width="1"/>
+
+  <g id="title-block" transform="translate(64 52)">
+    <text x="0" y="0" fill="#5EE1F2" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" font-weight="700" letter-spacing="2">OFFLINE TTS / FLUTTER + DART</text>
+    <text x="0" y="82" fill="#F5FAFC" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="66" font-weight="760" letter-spacing="-2">Pocket Speech</text>
+    <text x="0" y="126" fill="#B8CBD5" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24">Local Kokoro and KittenTTS inference.</text>
+    <text x="0" y="160" fill="#B8CBD5" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24">PCM and WAV bytes, ready for app playback.</text>
+
+    <g transform="translate(0 214)">
+      <rect width="144" height="42" rx="21" fill="#102532" stroke="#2B5364"/>
+      <circle cx="22" cy="21" r="5" fill="#5EE1F2"/>
+      <text x="38" y="27" fill="#EAF5F8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15">NO CLOUD</text>
+
+      <rect x="158" width="154" height="42" rx="21" fill="#102532" stroke="#2B5364"/>
+      <circle cx="180" cy="21" r="5" fill="#FFBF5B"/>
+      <text x="196" y="27" fill="#EAF5F8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15">LOCAL ONNX</text>
+
+      <rect x="326" width="170" height="42" rx="21" fill="#102532" stroke="#2B5364"/>
+      <text x="348" y="27" fill="#EAF5F8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15">EXPERIMENTAL</text>
+    </g>
+  </g>
+
+  <g id="project-proof" transform="translate(694 50)">
+    <rect width="442" height="278" rx="18" fill="#0C1922" stroke="#244453" stroke-width="2"/>
+    <text x="24" y="31" fill="#7895A4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" letter-spacing="1.4">ON-DEVICE SIGNAL PATH</text>
+
+    <rect x="24" y="51" width="394" height="46" rx="9" fill="#132631"/>
+    <text x="40" y="70" fill="#7895A4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">TEXT</text>
+    <text x="40" y="88" fill="#EAF5F8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15">“Kokoro habla localmente.”</text>
+
+    <path d="M221 97V117M124 117H318M124 117V130M318 117V130" fill="none" stroke="#3A6576" stroke-width="2"/>
+
+    <rect x="24" y="130" width="196" height="54" rx="9" fill="#102B37" stroke="#347083"/>
+    <text x="40" y="152" fill="#5EE1F2" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700">KOKORO</text>
+    <text x="40" y="173" fill="#A9C0CA" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">82M · EN / ES</text>
+
+    <rect x="232" y="130" width="186" height="54" rx="9" fill="#2A2417" stroke="#6D5830"/>
+    <text x="248" y="152" fill="#FFBF5B" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700">KITTENTTS</text>
+    <text x="248" y="173" fill="#CDBE9E" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">15M–80M · EN</text>
+
+    <path d="M122 184V204M325 184V204M122 204H325" fill="none" stroke="#3A6576" stroke-width="2"/>
+    <rect x="91" y="204" width="264" height="34" rx="17" fill="#132631"/>
+    <text x="223" y="226" text-anchor="middle" fill="#EAF5F8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">ONNX RUNTIME · LOCAL</text>
+
+    <g transform="translate(24 251)" fill="none" stroke="#5EE1F2" stroke-width="3" stroke-linecap="round">
+      <path d="M0 7H35L44 -2L54 17L66 -11L78 20L89 0L100 7H125"/>
+    </g>
+    <text x="173" y="264" fill="#F5FAFC" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700">PCM16 / WAV</text>
+    <text x="286" y="264" fill="#7895A4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">24 kHz · mono</text>
+  </g>
+
+  <g transform="translate(64 377)">
+    <text x="0" y="0" fill="#7895A4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">PACKAGE 0.1.0</text>
+    <text x="918" y="0" fill="#7895A4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">MIT · LINUX VERIFIED</text>
+  </g>
+</svg>
