@@ -3,8 +3,15 @@ import 'package:pocket_speech/pocket_speech.dart';
 
 void main() {
   test('catalog lists languages and default voices', () {
+    expect(KokoroCatalog.languages.map((language) => language.code), [
+      'en-us',
+      'en-gb',
+      'es',
+    ]);
     expect(KokoroCatalog.supportsLanguage('en-us'), isTrue);
     expect(KokoroCatalog.supportsLanguage('es'), isTrue);
+    expect(KokoroCatalog.supportsLanguage('fr-fr'), isFalse);
+    expect(KokoroCatalog.supportsVoice('ff_siwis'), isFalse);
     expect(KokoroCatalog.language('es').kokoroCode, 'e');
     expect(KokoroCatalog.defaultVoiceForLanguage('es').id, 'ef_dora');
   });
@@ -41,9 +48,24 @@ void main() {
     expect(() => KokoroSynthesisOptions.forLanguage('xx'), throwsArgumentError);
   });
 
+  test('synthesis rejects unsupported languages before model load', () async {
+    final tts = KokoroTts(
+      const KokoroTtsConfig(
+        modelAsset: 'model.onnx',
+        voicesAsset: 'voices.json',
+      ),
+    );
+
+    await expectLater(
+      tts.synthesize('bonjour', language: 'fr-fr'),
+      throwsArgumentError,
+    );
+  });
+
   test('speed setting is shared by catalog and synthesis', () async {
     expect(KokoroCatalog.speed.defaultValue, 1.0);
     expect(() => KokoroCatalog.speed.check(0.25), throwsRangeError);
+    expect(() => KokoroCatalog.speed.check(double.nan), throwsRangeError);
     expect(() => KokoroCatalog.speed.check(1.5), returnsNormally);
 
     final tts = KokoroTts(

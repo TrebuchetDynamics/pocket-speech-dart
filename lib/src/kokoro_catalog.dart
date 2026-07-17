@@ -10,7 +10,7 @@ class PocketSpeechSpeed {
   final double defaultValue;
 
   void check(double value) {
-    if (value < min || value > max) {
+    if (!value.isFinite || value < min || value > max) {
       throw RangeError.value(value, 'speed', 'must be between $min and $max');
     }
   }
@@ -102,42 +102,6 @@ class KokoroCatalog {
       name: 'Spanish',
       defaultVoice: 'ef_dora',
     ),
-    KokoroLanguage(
-      code: 'fr-fr',
-      kokoroCode: 'f',
-      name: 'French',
-      defaultVoice: 'ff_siwis',
-    ),
-    KokoroLanguage(
-      code: 'hi',
-      kokoroCode: 'h',
-      name: 'Hindi',
-      defaultVoice: 'hf_alpha',
-    ),
-    KokoroLanguage(
-      code: 'it',
-      kokoroCode: 'i',
-      name: 'Italian',
-      defaultVoice: 'if_sara',
-    ),
-    KokoroLanguage(
-      code: 'ja',
-      kokoroCode: 'j',
-      name: 'Japanese',
-      defaultVoice: 'jf_alpha',
-    ),
-    KokoroLanguage(
-      code: 'pt-br',
-      kokoroCode: 'p',
-      name: 'Brazilian Portuguese',
-      defaultVoice: 'pf_dora',
-    ),
-    KokoroLanguage(
-      code: 'zh',
-      kokoroCode: 'z',
-      name: 'Mandarin Chinese',
-      defaultVoice: 'zf_xiaobei',
-    ),
   ];
 
   static List<KokoroVoice> get voices =>
@@ -199,17 +163,6 @@ class KokoroCatalog {
     'bm': 'en-gb',
     'ef': 'es',
     'em': 'es',
-    'ff': 'fr-fr',
-    'hf': 'hi',
-    'hm': 'hi',
-    'if': 'it',
-    'im': 'it',
-    'jf': 'ja',
-    'jm': 'ja',
-    'pf': 'pt-br',
-    'pm': 'pt-br',
-    'zf': 'zh',
-    'zm': 'zh',
   };
 
   static const _voiceIds = [
@@ -244,28 +197,5 @@ class KokoroCatalog {
     'ef_dora',
     'em_alex',
     'em_santa',
-    'ff_siwis',
-    'hf_alpha',
-    'hf_beta',
-    'hm_omega',
-    'hm_psi',
-    'if_sara',
-    'im_nicola',
-    'jf_alpha',
-    'jf_gongitsune',
-    'jf_nezumi',
-    'jf_tebukuro',
-    'jm_kumo',
-    'pf_dora',
-    'pm_alex',
-    'pm_santa',
-    'zf_xiaobei',
-    'zf_xiaoni',
-    'zf_xiaoxiao',
-    'zf_xiaoyi',
-    'zm_yunjian',
-    'zm_yunxi',
-    'zm_yunxia',
-    'zm_yunyang',
   ];
 }

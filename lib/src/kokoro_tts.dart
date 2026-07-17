@@ -38,6 +38,7 @@ class KokoroTts {
     bool trim = true,
   }) async {
     KokoroCatalog.speed.check(speed);
+    KokoroCatalog.language(language);
     if (text.trim().isEmpty) return PocketSpeechAudio.empty();
     if (!_ready) {
       await _engine.initialize();
