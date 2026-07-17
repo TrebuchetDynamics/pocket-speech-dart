@@ -60,7 +60,12 @@ def download(path: pathlib.Path, url: str, expected_size: int, force: bool) -> p
 
 def export_voices(voices_bin: pathlib.Path, voices_json: pathlib.Path, voices: list[str], force: bool) -> pathlib.Path:
     if voices_json.exists() and not force:
-        return voices_json
+        try:
+            exported = json.loads(voices_json.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            exported = None
+        if isinstance(exported, dict) and set(exported) == set(voices):
+            return voices_json
 
     try:
         import numpy as np
